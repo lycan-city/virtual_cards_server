@@ -1,0 +1,11 @@
+{
+  "name": "virtual_cards_server",
+  "version": "0.0.0",
+  "description": "server component of a virtual cards system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mamodom",
+  "license": "ISC"
+}
