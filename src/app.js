@@ -4,7 +4,7 @@ import uuid from 'node-uuid';
 
 const app = express();
 const storage = {
-  games: {}
+  parties: {}
 };
 
 const fakeGame = {
@@ -38,46 +38,46 @@ app.get('/', (req, res) =>
 
 app.post('/host', (req, res) => {
   const userId = req.body.userId || uuid.v4();
-  const gameId = uuid.v4();
-  storage.games[gameId] = {
+  const partyId = uuid.v4();
+  storage.parties[partyId] = {
     host: userId,
     players: []
   };
   res.json({
-    gameId: gameId,
+    partyId: partyId,
     userId: userId
   });
 });
 
 app.post('/start', (req, res) => {
-  const gameId = req.body.gameId;
-  if (!gameId)
-    return res.status(400).json({ error: 'gameId cannot be undefined' });
+  const partyId = req.body.partyId;
+  if (!partyId)
+    return res.status(400).json({ error: 'partyId cannot be undefined' });
 
-  if (!storage.games[gameId])
-    return res.status(400).json({ error: `no game with id ${gameId} found` });
+  if (!storage.parties[partyId])
+    return res.status(400).json({ error: `no party with id ${partyId} found` });
 
-  const game = shuffle(fakeGame.create(storage.games[gameId].players.length));
+  const party = shuffle(fakeGame.create(storage.parties[partyId].players.length));
 
-  storage.games[gameId].players.forEach((p, i) => p.card = game[i]);
+  storage.parties[partyId].players.forEach((p, i) => p.card = party[i]);
 
-  res.json(storage.games[gameId]);
+  res.json(storage.parties[partyId]);
 });
 
 app.post('/join', (req, res) => {
-  if (!req.body.gameId)
-    return res.status(400).json({ error: 'gameId cannot be undefined' });
+  if (!req.body.partyId)
+    return res.status(400).json({ error: 'partyId cannot be undefined' });
 
-  if (!storage.games[req.body.gameId])
-    return res.status(400).json({ error: `no game with id ${req.body.gameId} found` });
+  if (!storage.parties[req.body.partyId])
+    return res.status(400).json({ error: `no party with id ${req.body.partyId} found` });
 
   const userId = req.body.userId || uuid.v4();
 
-  storage.games[req.body.gameId].players.push({ id: userId });
+  storage.parties[req.body.partyId].players.push({ id: userId });
 
   res.json({
     userId: userId,
-    game: storage.games[req.body.gameId]
+    party: storage.parties[req.body.partyId]
   });
 });
 
