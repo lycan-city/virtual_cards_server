@@ -3,6 +3,9 @@ import bodyParser from 'body-parser';
 import uuid from 'node-uuid';
 
 const app = express();
+
+app.set('port', (process.env.PORT || 3000));
+
 const storage = {
   parties: {}
 };
@@ -81,6 +84,6 @@ app.post('/join', (req, res) => {
   });
 });
 
-app.listen(3000);
+app.listen(app.get('port'));
 
-console.log('http://localhost:3000');
+console.log(`http://localhost:${app.get('port')}`);
