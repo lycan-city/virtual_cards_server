@@ -68,6 +68,7 @@ app.post('/start', (req, res) => {
 });
 
 app.post('/join', (req, res) => {
+  console.log(req);
   if (!req.body.partyId)
     return res.status(400).json({ error: 'partyId cannot be undefined' });
 

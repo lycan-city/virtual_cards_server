@@ -177,6 +177,7 @@ app.post('/start', function (req, res) {
 });
 
 app.post('/join', function (req, res) {
+  console.log(req);
   if (!req.body.partyId) return res.status(400).json({ error: 'partyId cannot be undefined' });
 
   if (!storage.parties[req.body.partyId]) return res.status(400).json({ error: 'no party with id ' + req.body.partyId + ' found' });
