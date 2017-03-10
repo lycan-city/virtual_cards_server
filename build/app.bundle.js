@@ -145,7 +145,7 @@ app.use(_bodyParser2.default.urlencoded({ extended: true }));
 app.use(_bodyParser2.default.json());
 
 app.get('/', function (req, res) {
-  return res.send('hello world');
+  return res.json(storage);
 });
 
 app.post('/host', function (req, res) {

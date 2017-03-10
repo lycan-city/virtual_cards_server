@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) =>
-    res.send('hello world')
+    res.json(storage)
 );
 
 app.post('/host', (req, res) => {
