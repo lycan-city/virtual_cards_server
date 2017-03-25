@@ -1,10 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import uuid from 'node-uuid';
+import pushr from './pushr';
+import config from '../config';
 
 const app = express();
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (config.port));
 
 const storage = {
   parties: {}
@@ -42,10 +44,14 @@ app.get('/', (req, res) =>
 app.post('/host', (req, res) => {
   const userId = req.body.userId || uuid.v4();
   const partyId = uuid.v4();
+
   storage.parties[partyId] = {
     host: userId,
     players: []
   };
+
+  pushr.trigger('host', storage.parties[partyId]);
+
   res.json({
     partyId: partyId,
     userId: userId
@@ -64,6 +70,8 @@ app.post('/start', (req, res) => {
 
   storage.parties[partyId].players.forEach((p, i) => p.card = party[i]);
 
+  pushr.trigger('start', {partyId});  
+
   res.json(storage.parties[partyId]);
 });
 
@@ -78,6 +86,8 @@ app.post('/join', (req, res) => {
   const userId = req.body.userId || uuid.v4();
 
   storage.parties[req.body.partyId].players.push({ id: userId });
+
+  pushr.trigger('join', {partyId: req.body.partyId, userId});    
 
   res.json({
     userId: userId,

@@ -4,22 +4,26 @@
   "description": "server component of a virtual cards system",
   "main": "src/app.js",
   "scripts": {
-    "precommit": "npm run build",
-    "build": "webpack && git add build/app.bundle.js",
-    "start": "node build/app.bundle.js"
+    "precommit": "npm run build && git add build/app.bundle.js",
+    "build": "webpack",
+    "start": "node build/app.bundle.js",
+    "dev": "nodemon --ignore build/ --exec 'npm run build && node -r ./node_modules/dotenv/config build/app.bundle.js'"
   },
   "author": "mamodom",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.16.1",
     "express": "^4.14.1",
-    "node-uuid": "^1.4.7"
+    "node-uuid": "^1.4.7",
+    "pusher": "^1.5.1"
   },
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.2",
     "babel-preset-es2015": "^6.22.0",
+    "dotenv": "^4.0.0",
     "git-pre-commit": "^2.1.3",
+    "nodemon": "^1.11.0",
     "webpack": "^2.2.1"
   }
 }
