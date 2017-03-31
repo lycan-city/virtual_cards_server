@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "description": "server component of a virtual cards system",
   "main": "src/app.js",
+  "engines": {
+    "node": "7.5.0"
+  },
   "scripts": {
-    "precommit": "npm run build",
-    "build": "webpack && git add build/app.bundle.js",
+    "build": "webpack --progress",
     "start": "node build/app.bundle.js"
   },
   "author": "mamodom",
@@ -19,7 +21,6 @@
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.2",
     "babel-preset-es2015": "^6.22.0",
-    "git-pre-commit": "^2.1.3",
     "webpack": "^2.2.1"
   }
 }

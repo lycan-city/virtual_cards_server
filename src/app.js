@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import uuid from 'node-uuid';
+import { exec } from 'child_process';
 
 const app = express();
 
@@ -36,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) =>
-    res.json(storage)
+  res.json(storage)
 );
 
 app.post('/host', (req, res) => {
