@@ -1,10 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import uuid from 'node-uuid';
+import pushr from './pushr';
+import config from '../config';
 
 const app = express();
 
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (config.port));
 
 const storage = {
     parties: {}
@@ -43,6 +45,8 @@ app.post('/host', (req, res) => {
         }]
     };
 
+    pushr.trigger('host', party);
+
     storage.parties[partyId] = party;
 
     res.json(party);
@@ -62,6 +66,8 @@ app.post('/join', (req, res) => {
         id: req.body.userId,
         name: req.body.userId,
     });
+
+    pushr.trigger('join', {partyId: req.body.partyId, userId});
 
     res.json(storage.parties[req.body.partyId]);
 });
