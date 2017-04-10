@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import uuid from 'node-uuid';
 import pushr from './pushr';
 import config from '../config';
+import _ from 'lodash';
 
 const app = express();
 
@@ -65,6 +66,26 @@ app.post('/join', (req, res) => {
     pushr.trigger(req.body.partyId, 'joined', req.body.user);
 
     res.json(storage.parties[req.body.partyId]);
+});
+
+app.post('/flee', (req, res) => {
+    if (!req.body.partyId)
+        return res.status(400).json({ error: 'partyId cannot be undefined' });
+
+    if(!req.body.userId)
+        return res.status(400).json({ error: 'userId cannot be undefined' });
+
+    if (!storage.parties[req.body.partyId])
+        return res.status(404).json({ error: `no party with id ${req.body.partyId} found` });
+
+    pushr.trigger(req.body.partyId, 'fled', {id: req.body.userId});
+    const players = storage.parties[req.body.partyId].players;
+
+    const fleeingIndex = _.findIndex(players, user => user.id == req.body.userId);
+
+    storage.parties[req.body.partyId].players = [...players.slice(0, fleeingIndex), ...players.slice(fleeingIndex + 1)]
+
+    res.sendStatus(200);
 });
 
 app.listen(app.get('port'));
