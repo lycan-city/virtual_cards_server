@@ -11,7 +11,7 @@ export default new class Pushr {
         });
     }
 
-    trigger(event, payload, channel = 'parties') {
+    trigger(channel, event, payload) {
         this.pusher.trigger(channel, event, payload);
     }
 }

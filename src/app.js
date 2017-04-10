@@ -45,8 +45,6 @@ app.post('/host', (req, res) => {
         }]
     };
 
-    pushr.trigger('host', party);
-
     storage.parties[partyId] = party;
 
     res.json(party);
@@ -56,18 +54,15 @@ app.post('/join', (req, res) => {
     if (!req.body.partyId)
         return res.status(400).json({ error: 'partyId cannot be undefined' });
 
-    if(!req.body.userId)
-        return res.status(400).json({ error: 'userId cannot be undefined' });
+    if(!req.body.user || !req.body.user.id || !req.body.user.name)
+        return res.status(400).json({ error: 'user cannot be undefined' });
 
     if (!storage.parties[req.body.partyId])
         return res.status(404).json({ error: `no party with id ${req.body.partyId} found` });
 
-    storage.parties[req.body.partyId].players.push({
-        id: req.body.userId,
-        name: req.body.userId,
-    });
+    storage.parties[req.body.partyId].players.push(req.body.user);
 
-    pushr.trigger('join', {partyId: req.body.partyId, userId});
+    pushr.trigger(req.body.partyId, 'joined', req.body.user);
 
     res.json(storage.parties[req.body.partyId]);
 });
