@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "description": "server component of a virtual cards system",
   "main": "src/app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mamodom/virtual_cards_server"
+  },
   "engines": {
     "node": "7.5.0"
   },
