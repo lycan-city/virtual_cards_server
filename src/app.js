@@ -18,17 +18,27 @@ app.get('/', (req, res) =>
 );
 
 app.post('/host', (req, res) => {
-    if(!req.body.userId)
+    console.log(req.body);
+
+    if(!req.body.user)
         return res.status(400)
-            .json({ error: 'userId cannot be undefined' });
+            .json({ error: 'user cannot be undefined' });
+    if(!req.body.user.id)
+        return res.status(400)
+            .json({ error: 'user.id cannot be undefined' });
+    if(!req.body.user.name)
+        return res.status(400)
+            .json({ error: 'user.name cannot be undefined' });
 
     const partyId = uuid.v4().substr(0,4);
 
+    const { id, name } = req.body.user;
+
     const party = {
-        partyId: partyId,
+        id: partyId,
         players: [{
-            id: req.body.userId,
-            name: req.body.userId,
+            id,
+            name,
             host: true
         }]
     };
