@@ -9,30 +9,8 @@ const app = express();
 app.set('port', (config.port));
 
 const storage = {
-  parties: {}
+    parties: {}
 };
-
-const fakeGame = {
-  create: players => [...Array(players).keys()]
-};
-
-function shuffle(array) {
-  var m = array.length, t, i;
-
-  // While there remain elements to shuffle…
-  while (m) {
-
-    // Pick a remaining element…
-    i = Math.floor(Math.random() * m--);
-
-    // And swap it with the current element.
-    t = array[m];
-    array[m] = array[i];
-    array[i] = t;
-  }
-
-  return array;
-}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -42,57 +20,56 @@ app.get('/', (req, res) =>
 );
 
 app.post('/host', (req, res) => {
-  const userId = req.body.userId || uuid.v4();
-  const partyId = uuid.v4();
+    console.log(req.body);
 
-  storage.parties[partyId] = {
-    host: userId,
-    players: []
-  };
+    if(!req.body.user)
+        return res.status(400)
+            .json({ error: 'user cannot be undefined' });
+    if(!req.body.user.id)
+        return res.status(400)
+            .json({ error: 'user.id cannot be undefined' });
+    if(!req.body.user.name)
+        return res.status(400)
+            .json({ error: 'user.name cannot be undefined' });
 
-  pushr.trigger('host', storage.parties[partyId]);
+    const partyId = uuid.v4().substr(0,4);
 
-  res.json({
-    partyId: partyId,
-    userId: userId
-  });
-});
+    const { id, name } = req.body.user;
 
-app.post('/start', (req, res) => {
-  const partyId = req.body.partyId;
-  if (!partyId)
-    return res.status(400).json({ error: 'partyId cannot be undefined' });
+    const party = {
+        id: partyId,
+        players: [{
+            id,
+            name,
+            host: true
+        }]
+    };
 
-  if (!storage.parties[partyId])
-    return res.status(400).json({ error: `no party with id ${partyId} found` });
+    pushr.trigger('host', party);
 
-  const party = shuffle(fakeGame.create(storage.parties[partyId].players.length));
+    storage.parties[partyId] = party;
 
-  storage.parties[partyId].players.forEach((p, i) => p.card = party[i]);
-
-  pushr.trigger('start', {partyId});  
-
-  res.json(storage.parties[partyId]);
+    res.json(party);
 });
 
 app.post('/join', (req, res) => {
-  console.log(req);
-  if (!req.body.partyId)
-    return res.status(400).json({ error: 'partyId cannot be undefined' });
+    if (!req.body.partyId)
+        return res.status(400).json({ error: 'partyId cannot be undefined' });
 
-  if (!storage.parties[req.body.partyId])
-    return res.status(400).json({ error: `no party with id ${req.body.partyId} found` });
+    if(!req.body.userId)
+        return res.status(400).json({ error: 'userId cannot be undefined' });
 
-  const userId = req.body.userId || uuid.v4();
+    if (!storage.parties[req.body.partyId])
+        return res.status(404).json({ error: `no party with id ${req.body.partyId} found` });
 
-  storage.parties[req.body.partyId].players.push({ id: userId });
+    storage.parties[req.body.partyId].players.push({
+        id: req.body.userId,
+        name: req.body.userId,
+    });
 
-  pushr.trigger('join', {partyId: req.body.partyId, userId});    
+    pushr.trigger('join', {partyId: req.body.partyId, userId});
 
-  res.json({
-    userId: userId,
-    party: storage.parties[req.body.partyId]
-  });
+    res.json(storage.parties[req.body.partyId]);
 });
 
 app.listen(app.get('port'));

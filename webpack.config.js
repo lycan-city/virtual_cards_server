@@ -10,13 +10,15 @@ module.exports = {
     entry: './src/app.js',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'app.bundle.js'
+        filename: 'app.bundle.js',
+        sourceMapFilename: 'app.bundle.map'
     },
+    devtool: 'source-map',
     target: 'node',
     externals: nodeModules,
     module: {
        loaders: [
-           { 
+           {
                test: /\.js$/,
                exclude: /node_modules/,
                loader: 'babel-loader',

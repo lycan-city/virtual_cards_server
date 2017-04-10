@@ -67,3 +67,5 @@ typings/
 .vscode
 
 *.swp
+
+build
