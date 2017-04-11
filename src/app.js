@@ -91,6 +91,34 @@ app.post('/flee', (req, res) => {
     res.sendStatus(200);
 });
 
+app.post('/promote', (req, res) => {
+    if (!req.body.partyId)
+        return res.status(400).json({ error: 'partyId cannot be undefined' });
+
+    if(!req.body.userId)
+        return res.status(400).json({ error: 'userId cannot be undefined' });
+
+    if(!req.body.hostId)
+        return res.status(400).json({ error: 'hostId cannot be undefined' });
+
+    if (!storage.parties[req.body.partyId])
+        return res.status(404).json({ error: `no party with id ${req.body.partyId} found` });
+    
+    const players = storage.parties[req.body.partyId].players;
+
+    const oldHostIndex = _.findIndex(players, user => user.id == req.body.hostId);
+    const newHostIndex = _.findIndex(players, user => user.id == req.body.userId);
+
+    players[oldHostIndex].host = false;
+    players[newHostIndex].host = true;
+
+    storage.parties[req.body.partyId].players = players;
+
+    pushr.trigger(req.body.partyId, 'refresh', storage.parties[req.body.partyId]);    
+
+    res.sendStatus(200);
+});
+
 app.listen(app.get('port'));
 
 console.log(`http://localhost:${app.get('port')}`);
