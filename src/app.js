@@ -92,29 +92,32 @@ app.post('/flee', (req, res) => {
 });
 
 app.post('/promote', (req, res) => {
-    if (!req.body.partyId)
+
+    const {partyId, userId, hostId } = req.body;
+
+    if (!partyId)
         return res.status(400).json({ error: 'partyId cannot be undefined' });
 
-    if(!req.body.userId)
+    if(!userId)
         return res.status(400).json({ error: 'userId cannot be undefined' });
 
-    if(!req.body.hostId)
+    if(!hostId)
         return res.status(400).json({ error: 'hostId cannot be undefined' });
 
-    if (!storage.parties[req.body.partyId])
-        return res.status(404).json({ error: `no party with id ${req.body.partyId} found` });
+    if (!storage.parties[partyId])
+        return res.status(404).json({ error: `no party with id ${partyId} found` });
     
-    const players = storage.parties[req.body.partyId].players;
+    const players = storage.parties[partyId].players;
 
-    const oldHostIndex = _.findIndex(players, user => user.id == req.body.hostId);
-    const newHostIndex = _.findIndex(players, user => user.id == req.body.userId);
+    const oldHostIndex = _.findIndex(players, user => user.id == hostId);
+    const newHostIndex = _.findIndex(players, user => user.id == userId);
 
     players[oldHostIndex].host = false;
     players[newHostIndex].host = true;
 
-    storage.parties[req.body.partyId].players = players;
+    storage.parties[partyId].players = players;
 
-    pushr.trigger(req.body.partyId, 'refresh', storage.parties[req.body.partyId]);    
+    pushr.trigger(partyId, 'refresh', storage.parties[partyId]);    
 
     res.sendStatus(200);
 });
