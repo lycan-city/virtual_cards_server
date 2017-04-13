@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "webpack --progress",
-    "start": "node build/app.bundle.js",
+    "start": "npm run build && node build/app.bundle.js",
     "dev": "nodemon --ignore build/ --exec 'npm run build && node -r ./node_modules/dotenv/config build/app.bundle.js'"
   },
   "author": "mamodom",
