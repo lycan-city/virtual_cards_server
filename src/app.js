@@ -86,8 +86,6 @@ app.post('/flee', (req, res) => {
 
     players.splice(fleeingIndex, 1);
 
-    storage.parties[req.body.partyId].players = players;
-
     res.sendStatus(200);
 });
 
