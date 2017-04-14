@@ -92,7 +92,6 @@ app.post('/flee', (req, res) => {
 });
 
 app.post('/promote', (req, res) => {
-
     const {partyId, userId, hostId } = req.body;
 
     if (!partyId)
@@ -114,8 +113,6 @@ app.post('/promote', (req, res) => {
 
     players[oldHostIndex].host = false;
     players[newHostIndex].host = true;
-
-    storage.parties[partyId].players = players;
 
     pushr.trigger(partyId, 'refresh', storage.parties[partyId]);    
 
