@@ -116,8 +116,6 @@ app.post('/kick', (req, res) => {
 
     players.splice(kickedIndex, 1);
 
-    storage.parties[partyId].players = players;
-
     pushr.trigger(partyId, 'kicked', {id: userId});
 
     res.sendStatus(200);
