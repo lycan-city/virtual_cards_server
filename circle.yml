@@ -10,7 +10,14 @@ test:
     - git commit -m "build $(git rev-parse HEAD)"
 
 deployment:
-  staging:
+  production:
     branch: master
     commands:
       - git push -f git@heroku.com:virtual-cards-server.git master:master
+
+deployment:
+  staging:
+    branch: sandbox
+    commands:
+      - git remote add dokku dokku@138.197.54.233:sandbox.api.wwmoderator.com
+      - git push dokku master
