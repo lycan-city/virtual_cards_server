@@ -1,19 +1,13 @@
 test:
   override:
-    - ls
-  post:
-    - npm run build
-    - git add build/ -f
-    - git config user.name "circleci"
-    - git config user.email "circleci@virtual-cards-server.com"
-    - git add -A
-    - git commit -m "build $(git rev-parse HEAD)"
+    - npm test
 
 deployment:
   production:
     branch: master
     commands:
-      - git push -f git@heroku.com:virtual-cards-server.git master:master
+      - git remote add dokku dokku@138.197.54.233:api
+      - git push dokku master
 
 deployment:
   staging:
