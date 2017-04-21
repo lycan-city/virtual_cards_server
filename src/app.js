@@ -117,6 +117,36 @@ app.post('/promote', (req, res) => {
     res.sendStatus(200);
 });
 
+app.post('/kick', (req, res) => {
+
+    const { partyId, userId, hostId } = req.body;
+    
+    if (!partyId)
+        return res.status(400).json({ error: 'partyId cannot be undefined' });
+
+    if(!userId)
+        return res.status(400).json({ error: 'userId cannot be undefined' });
+
+    if(!hostId)
+        return res.status(400).json({ error: 'hostId cannot be undefined' });
+
+    if (!storage.parties[partyId])
+        return res.status(404).json({ error: `no party with id ${partyId} found` });
+
+    const players = storage.parties[partyId].players;
+    
+    if(!players.find(p => p.id === hostId) || !players.find(p => p.id === hostId).host)
+        return res.status(401).json({ error: `user with id ${hostId} is not the host of party ${partyId}` });
+
+    const kickedIndex = _.findIndex(players, user => user.id == userId);
+
+    players.splice(kickedIndex, 1);
+
+    pushr.trigger(partyId, 'kicked', {id: userId});
+
+    res.sendStatus(200);
+});
+
 app.listen(app.get('port'));
 
 console.log(`http://localhost:${app.get('port')}`);
