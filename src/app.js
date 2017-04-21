@@ -79,11 +79,12 @@ app.post('/flee', (req, res) => {
         return res.status(404).json({ error: `no party with id ${req.body.partyId} found` });
 
     pushr.trigger(req.body.partyId, 'fled', {id: req.body.userId});
+    
     const players = storage.parties[req.body.partyId].players;
 
     const fleeingIndex = _.findIndex(players, user => user.id == req.body.userId);
 
-    storage.parties[req.body.partyId].players = [...players.slice(0, fleeingIndex), ...players.slice(fleeingIndex + 1)]
+    players.splice(fleeingIndex, 1);
 
     res.sendStatus(200);
 });

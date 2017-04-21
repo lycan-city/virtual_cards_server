@@ -7,7 +7,6 @@ export default new class Pushr {
             appId: config.pusherAppId,
             key: config.pusherKey,
             secret: config.pusherSecret,
-            encrypted: config.pusherEncrypted,
         });
     }
 
